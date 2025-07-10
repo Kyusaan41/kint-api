@@ -1,0 +1,18 @@
+'Log files:
+/home/container/.npm/_logs/2025-04-25T18_23_57_993Z-debug-0.log
+
+# npm resolution error report
+
+While resolving: undefined@undefined
+Found: @discord-player/extractor@7.1.0
+node_modules/@discord-player/extractor
+  @discord-player/extractor@"^7.1.0" from the root project
+
+Could not resolve dependency:
+peer @discord-player/extractor@"^4.5.0" from discord-player@6.7.1
+node_modules/discord-player
+  discord-player@"^6.7.1" from the root project
+
+Fix the upstream dependency conflict, or retry
+this command with --force or --legacy-peer-deps
+to accept an incorrect (and potentially broken) dependency resolution.

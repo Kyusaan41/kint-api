@@ -1,0 +1,16 @@
+{
+  "title": "🚀 Mise à jour",
+  "description": "Reste informé sur l'état du bot.",
+  "ajouts": [
+    "🎉 Nouveau système d'anniversaire : entre ta date avec `/profile`, ton anniversaire sera célébré par le bot avec un message personnalisé et peut-être un 🎁 cadeau surprise !",
+    "🎤 Système de création automatique de salons vocaux : clique sur `Créer ton vocal` pour générer ton propre salon vocal temporaire, ce qui aide à garder le serveur propre et organisé 🧹."
+  ],
+  "corrections": [],
+  "suppressions": [],
+  "systeme": [],
+  "ajustements": [
+    "⚙️ Simplification de la commande `/utilise` pour une meilleure expérience utilisateur.",
+    "✨ Affichage allégé des items afin d'éviter la confusion chez les membres."
+  ],
+  "footer": "Kint Bot | Mise à jour 3.2.2"
+}

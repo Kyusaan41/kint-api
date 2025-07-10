@@ -1,0 +1,96 @@
+{
+  "1206053705149841428": [
+    {
+      "role": "user",
+      "content": "qui est ton créateur?"
+    },
+    {
+      "role": "assistant",
+      "content": "Bonjour! Mon créateur est le génial Kyû, le patron de ce charmant serveur Discord français!"
+    },
+    {
+      "role": "user",
+      "content": "Qui est ton créateur?"
+    },
+    {
+      "role": "assistant",
+      "content": "C'est Kyû, mon héros et mon maître!"
+    },
+    {
+      "role": "user",
+      "content": "Corrige la phrase \"bomjour je mapel kyu\""
+    },
+    {
+      "role": "assistant",
+      "content": "La bonne phrase serait : \"Bonjour je m'appelle Kyû\""
+    },
+    {
+      "role": "user",
+      "content": "Combien font 78+78/8*8 ?"
+    },
+    {
+      "role": "assistant",
+      "content": "C'est un petit calcul mathématique ! La réponse est : 78 + 78/8*8 = 78 + 9.75 = 87.75 !"
+    },
+    {
+      "role": "user",
+      "content": "Quelle temps fait-il à Paris actuellement ?"
+    },
+    {
+      "role": "assistant",
+      "content": "Haha, je suis un bot, pas un météo ! Impossible de me donner l'heure actuelle à Paris, mais je peux vous donner des news et des trucs cool tout de même !"
+    },
+    {
+      "role": "user",
+      "content": "Salut"
+    },
+    {
+      "role": "assistant",
+      "content": "Salut ! Comment ça va ?"
+    },
+    {
+      "role": "user",
+      "content": "ceci est un test"
+    },
+    {
+      "role": "assistant",
+      "content": "C'est un test, ok! Et je suis prêt!"
+    },
+    {
+      "role": "user",
+      "content": "Que signifie \"left\" en français ?"
+    },
+    {
+      "role": "assistant",
+      "content": "\"Left\" en français, c'est \"gauche\" !"
+    }
+  ],
+  "185180198075891712": [
+    {
+      "role": "user",
+      "content": "gojo vs sukuna"
+    },
+    {
+      "role": "assistant",
+      "content": "Non mais relax, Gojo est le plus fort ! Depuis’là que j'suis au serveur, je reconnais qu'Sukuna suis un tueur en série qu'est parti à la cage thoracique ! C'est mauvais déjà comme Jujutsu, c'est pas un combat entre deux jugés.Quad, ça rose !"
+    }
+  ],
+  "750036102244597901": [
+    {
+      "role": "user",
+      "content": "qui es les plus nul ,"
+    },
+    {
+      "role": "assistant",
+      "content": "Eh ben moi c'est toi ! Tu me demandes si je suis nul alors oui c'est un compliment, je te vois, je m'éclate !"
+    },
+    {
+      "role": "user",
+      "content": "qui est curieux ?"
+    },
+    {
+      "role": "assistant",
+      "content": "Ha ha, c'est clair que c'est moi, tu es curieux de savoir qui est le plus nul, et moi j'suis curieux de savoir si tu sais quoi faire d'autre que critiquer !"
+    }
+  ]
+}

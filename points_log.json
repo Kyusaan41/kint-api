@@ -1,0 +1,380 @@
+{
+  "1206053705149841428": [
+    {
+      "actionType": "PERDU",
+      "points": 1,
+      "currentBalance": 462,
+      "effect": "Aucun effet",
+      "date": "2025-07-07T18:15:49.133Z",
+      "reason": "Action Administrateur",
+      "source": "admin_dashboard"
+    },
+    {
+      "actionType": "GAGNÉ",
+      "points": 78,
+      "currentBalance": 540,
+      "effect": "Aucun effet",
+      "date": "2025-07-07T19:42:07.157Z",
+      "reason": "Victoire",
+      "source": "Dashboard"
+    },
+    {
+      "actionType": "PERDU",
+      "points": 40,
+      "currentBalance": 540,
+      "effect": "KShield",
+      "date": "2025-07-08T19:25:27.463Z",
+      "reason": "Protégé par KShield",
+      "source": "Dashboard"
+    },
+    {
+      "actionType": "GAGNÉ",
+      "points": 82,
+      "currentBalance": 622,
+      "effect": "Aucun effet",
+      "date": "2025-07-08T20:10:59.659Z",
+      "reason": "Victoire",
+      "source": "Dashboard"
+    },
+    {
+      "actionType": "PERDU",
+      "points": 70,
+      "currentBalance": 622,
+      "effect": "KShield",
+      "date": "2025-07-08T22:02:48.658Z",
+      "reason": "Protégé par KShield",
+      "source": "Dashboard"
+    },
+    {
+      "actionType": "GAGNÉ",
+      "points": 59,
+      "currentBalance": 683,
+      "effect": "Aucun effet",
+      "date": "2025-07-09T19:24:53.731Z",
+      "reason": "Victoire",
+      "source": "Dashboard"
+    },
+    {
+      "actionType": "GAGNÉ",
+      "points": 39,
+      "currentBalance": 722,
+      "effect": "Aucun effet",
+      "date": "2025-07-09T20:08:56.944Z",
+      "reason": "Victoire",
+      "source": "Dashboard"
+    }
+  ],
+  "291540034006286346": [
+    {
+      "actionType": "PERDU",
+      "points": 78,
+      "currentBalance": 226,
+      "effect": "KShield",
+      "date": "2025-07-07T19:30:46.301Z",
+      "reason": "Protégé par KShield",
+      "source": "Dashboard"
+    },
+    {
+      "actionType": "GAGNÉ",
+      "points": 73,
+      "currentBalance": 299,
+      "effect": "Aucun effet",
+      "date": "2025-07-07T20:22:48.716Z",
+      "reason": "Victoire",
+      "source": "Dashboard"
+    },
+    {
+      "actionType": "PERDU",
+      "points": 73,
+      "currentBalance": 226,
+      "effect": "Aucun effet",
+      "date": "2025-07-07T20:23:37.371Z",
+      "reason": "Défaite",
+      "source": "Dashboard"
+    },
+    {
+      "actionType": "GAGNÉ",
+      "points": 35,
+      "currentBalance": 261,
+      "effect": "Aucun effet",
+      "date": "2025-07-07T20:23:43.789Z",
+      "reason": "Victoire",
+      "source": "Dashboard"
+    },
+    {
+      "actionType": "PERDU",
+      "points": 88,
+      "currentBalance": 173,
+      "effect": "Aucun effet",
+      "date": "2025-07-08T19:27:08.144Z",
+      "reason": "Défaite",
+      "source": "Dashboard"
+    },
+    {
+      "actionType": "GAGNÉ",
+      "points": 84,
+      "currentBalance": 257,
+      "effect": "Aucun effet",
+      "date": "2025-07-08T20:11:20.441Z",
+      "reason": "Victoire",
+      "source": "Dashboard"
+    },
+    {
+      "actionType": "PERDU",
+      "points": 70,
+      "currentBalance": 187,
+      "effect": "Aucun effet",
+      "date": "2025-07-08T21:50:20.118Z",
+      "reason": "Défaite",
+      "source": "Dashboard"
+    }
+  ],
+  "120440425017376768": [
+    {
+      "date": "2025-07-07T19:40:39.900Z",
+      "source": "Discord",
+      "actionType": "PERDU",
+      "points": 78,
+      "currentBalance": -78,
+      "reason": "Défaite",
+      "effect": "Aucun effet"
+    },
+    {
+      "date": "2025-07-07T20:22:17.981Z",
+      "source": "Discord",
+      "actionType": "GAGNÉ",
+      "points": 100,
+      "currentBalance": 22,
+      "reason": "Victoire",
+      "effect": "Aucun effet"
+    },
+    {
+      "date": "2025-07-07T21:12:53.371Z",
+      "source": "Discord",
+      "actionType": "GAGNÉ",
+      "points": 88,
+      "currentBalance": 110,
+      "reason": "Victoire",
+      "effect": "Aucun effet"
+    }
+  ],
+  "185180198075891712": [
+    {
+      "actionType": "GAGNÉ",
+      "points": 81,
+      "currentBalance": 1012,
+      "effect": "Aucun effet",
+      "date": "2025-07-07T20:22:30.734Z",
+      "reason": "Victoire",
+      "source": "Dashboard"
+    },
+    {
+      "actionType": "GAGNÉ",
+      "points": 87,
+      "currentBalance": 1099,
+      "effect": "Aucun effet",
+      "date": "2025-07-08T20:15:12.298Z",
+      "reason": "Victoire",
+      "source": "Dashboard"
+    },
+    {
+      "actionType": "GAGNÉ",
+      "points": 93,
+      "currentBalance": 1192,
+      "effect": "Aucun effet",
+      "date": "2025-07-09T14:45:36.403Z",
+      "reason": "Victoire",
+      "source": "Dashboard"
+    },
+    {
+      "actionType": "GAGNÉ",
+      "points": 1,
+      "currentBalance": 1193,
+      "effect": "Aucun effet",
+      "date": "2025-07-09T14:53:11.638Z",
+      "reason": "Action Administrateur",
+      "source": "admin_dashboard"
+    },
+    {
+      "actionType": "PERDU",
+      "points": 1,
+      "currentBalance": 1192,
+      "effect": "Aucun effet",
+      "date": "2025-07-09T14:53:20.568Z",
+      "reason": "Action Administrateur",
+      "source": "admin_dashboard"
+    },
+    {
+      "actionType": "GAGNÉ",
+      "points": 41,
+      "currentBalance": 1233,
+      "effect": "Aucun effet",
+      "date": "2025-07-09T19:26:24.331Z",
+      "reason": "Victoire",
+      "source": "Dashboard"
+    },
+    {
+      "actionType": "GAGNÉ",
+      "points": 44,
+      "currentBalance": 1277,
+      "effect": "Aucun effet",
+      "date": "2025-07-09T20:08:10.783Z",
+      "reason": "Victoire",
+      "source": "Dashboard"
+    }
+  ],
+  "750036102244597901": [
+    {
+      "actionType": "GAGNÉ",
+      "points": 62,
+      "currentBalance": 352,
+      "effect": "Aucun effet",
+      "date": "2025-07-07T20:22:33.113Z",
+      "reason": "Victoire",
+      "source": "Dashboard"
+    },
+    {
+      "actionType": "GAGNÉ",
+      "points": 21,
+      "currentBalance": 373,
+      "effect": "Aucun effet",
+      "date": "2025-07-08T20:10:39.998Z",
+      "reason": "Victoire",
+      "source": "Dashboard"
+    },
+    {
+      "actionType": "GAGNÉ",
+      "points": 63,
+      "currentBalance": 436,
+      "effect": "Aucun effet",
+      "date": "2025-07-09T14:44:44.601Z",
+      "reason": "Victoire",
+      "source": "Dashboard"
+    },
+    {
+      "actionType": "GAGNÉ",
+      "points": 34,
+      "currentBalance": 470,
+      "effect": "Aucun effet",
+      "date": "2025-07-09T20:08:07.118Z",
+      "reason": "Victoire",
+      "source": "Dashboard"
+    },
+    {
+      "actionType": "PERDU",
+      "points": 73,
+      "currentBalance": 470,
+      "effect": "KShield",
+      "date": "2025-07-09T20:55:08.375Z",
+      "reason": "Protégé par KShield",
+      "source": "Dashboard"
+    }
+  ],
+  "524964051009142787": [
+    {
+      "date": "2025-07-07T21:31:50.304Z",
+      "source": "Discord",
+      "actionType": "PERDU",
+      "points": 88,
+      "currentBalance": 502,
+      "reason": "Défaite",
+      "effect": "Aucun effet"
+    },
+    {
+      "actionType": "PERDU",
+      "points": 40,
+      "currentBalance": 462,
+      "effect": "Aucun effet",
+      "date": "2025-07-08T19:25:35.264Z",
+      "reason": "Défaite",
+      "source": "Dashboard"
+    },
+    {
+      "actionType": "GAGNÉ",
+      "points": 70,
+      "currentBalance": 532,
+      "effect": "Aucun effet",
+      "date": "2025-07-08T20:10:49.416Z",
+      "reason": "Victoire",
+      "source": "Dashboard"
+    },
+    {
+      "actionType": "GAGNÉ",
+      "points": 61,
+      "currentBalance": 593,
+      "effect": "Aucun effet",
+      "date": "2025-07-09T14:44:20.716Z",
+      "reason": "Victoire",
+      "source": "Dashboard"
+    }
+  ],
+  "475702210378858506": [
+    {
+      "actionType": "GAGNÉ",
+      "points": 95,
+      "currentBalance": 229,
+      "effect": "Aucun effet",
+      "date": "2025-07-09T14:45:00.911Z",
+      "reason": "Victoire",
+      "source": "Dashboard"
+    },
+    {
+      "actionType": "GAGNÉ",
+      "points": 24,
+      "currentBalance": 253,
+      "effect": "Aucun effet",
+      "date": "2025-07-09T19:25:00.440Z",
+      "reason": "Victoire",
+      "source": "Dashboard"
+    },
+    {
+      "actionType": "GAGNÉ",
+      "points": 18,
+      "currentBalance": 271,
+      "effect": "Aucun effet",
+      "date": "2025-07-09T19:25:16.419Z",
+      "reason": "Victoire",
+      "source": "Dashboard"
+    },
+    {
+      "actionType": "GAGNÉ",
+      "points": 92,
+      "currentBalance": 363,
+      "effect": "Aucun effet",
+      "date": "2025-07-09T20:07:39.349Z",
+      "reason": "Victoire",
+      "source": "Dashboard"
+    }
+  ],
+  "292753316226531328": [
+    {
+      "actionType": "GAGNÉ",
+      "points": 79,
+      "currentBalance": 232,
+      "effect": "Aucun effet",
+      "date": "2025-07-09T19:26:03.087Z",
+      "reason": "Victoire",
+      "source": "Dashboard"
+    },
+    {
+      "actionType": "GAGNÉ",
+      "points": 93,
+      "currentBalance": 325,
+      "effect": "Aucun effet",
+      "date": "2025-07-09T20:07:51.482Z",
+      "reason": "Victoire",
+      "source": "Dashboard"
+    }
+  ],
+  "781917823340773407": [
+    {
+      "actionType": "GAGNÉ",
+      "points": 73,
+      "currentBalance": 73,
+      "effect": "Aucun effet",
+      "date": "2025-07-09T20:56:45.184Z",
+      "reason": "Victoire",
+      "source": "Dashboard"
+    }
+  ]
+}

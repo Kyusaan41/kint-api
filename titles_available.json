@@ -1,0 +1,23 @@
+{
+"Grenouille": {
+    "description": "Équipe toi d'un super titre !",
+    "price": 2500,
+    "rarete": "Rare",
+    "icon": "/icons/frog.png"
+    },
+    "L'Élu": {
+    "description": "Tu es devenu l'élu !",
+    "succes_id": "thechosen",
+    "rarete": "Rare"
+    },
+    "Parachutiste": {
+    "description": "Obtenu dans un largage !",
+    "rarete": "Légendaire",
+    "loot": true
+  },
+  "Créateur": {
+    "description": "Destiné au créateur du bot Kint - 2025.",
+    "rarete": "Légendaire",
+    "loot": false
+  } 
+}    

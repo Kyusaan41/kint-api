@@ -1,0 +1,48 @@
+{
+  "firstpurchase": {
+    "name": "💎 Premier Achat",
+    "description": "Fait ton premier achat dans le shop.",
+    "emote": "<:goldBadge:123456789012345678>",
+    "condition": "purchase",
+    "hidden": false
+  },
+  "rich100k": {
+    "name": "🪙 Début de la richesse ",
+    "description": "Atteins 100 000 pièces.",
+    "emote": "<:richBadge:987654321098765432>",
+    "condition": "balance>=100000",
+    "hidden": false
+  },
+    "rich500k": {
+    "name": "💰 Noblesse ",
+    "description": "Atteins 500 000 pièces.",
+    "emote": "<:richBadge:987654321098765432>",
+    "condition": "balance>=500000",
+    "hidden": false
+    },
+  "kintgod": {
+    "name": "⚡DIEU DU KINT",
+    "description": "Atteins 10 000 points.",
+    "emote": "<:targetBadge:112233445566778899>",
+    "condition": "points>=10000",
+    "hidden": false
+  },
+  "thechosen": {
+    "name": "🐸 L’élu",
+    "description": "Tu as été choisi par le destin.",
+    "condition": "manual",
+    "hidden": false
+  },
+  "daily7": {
+  "name": "📆 Fidèle",
+  "description": "Utilise une commande chaque jour pendant 30 jours consécutifs.",
+  "condition": "daily30",
+  "hidden": false
+},
+"deepclick": {
+  "name": "🔍 Curieux",
+  "description": "Tu as débloqué un succès caché !",
+  "condition": "curiosity>=10",
+  "hidden": true
+}
+}

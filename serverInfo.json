@@ -1,0 +1,410 @@
+{
+  "guildId": "950136485867307088",
+  "guildName": "KTS",
+  "guildIcon": "150fa2c886cd2c0952bc77743016ef99",
+  "memberCount": 56,
+  "messageCount": 34941,
+  "messagesLast7Days": [
+    4820,
+    3841,
+    3836,
+    3879,
+    9326,
+    4620,
+    4620
+  ],
+  "members": [
+    {
+      "id": "185180198075891712",
+      "username": "kuromyi",
+      "avatar": "https://cdn.discordapp.com/avatars/185180198075891712/694ec1365b1e65b593a9c79a75f0a754.webp?size=128",
+      "joinedAt": "2024-08-26T15:22:46.819Z",
+      "status": "offline"
+    },
+    {
+      "id": "1339643139412983950",
+      "username": "Kint",
+      "avatar": "https://cdn.discordapp.com/avatars/1339643139412983950/33fc23a518d7ded1f375fe8086e127c1.webp?size=128",
+      "joinedAt": "2025-02-13T23:48:33.336Z",
+      "status": "offline"
+    },
+    {
+      "id": "219217116073558017",
+      "username": "evetox",
+      "avatar": "https://cdn.discordapp.com/avatars/219217116073558017/42f5b409f1a7e148dc455b90352f49fc.webp?size=128",
+      "joinedAt": "2025-06-25T15:14:15.080Z",
+      "status": "offline"
+    },
+    {
+      "id": "474666841478922247",
+      "username": "kc_wilicyp",
+      "avatar": "https://cdn.discordapp.com/avatars/474666841478922247/4101c1d9ffe0bb0927feae6249c4b708.webp?size=128",
+      "joinedAt": "2025-06-25T15:19:38.404Z",
+      "status": "offline"
+    },
+    {
+      "id": "1007711657012764702",
+      "username": "zero_lelouche2",
+      "avatar": "https://cdn.discordapp.com/avatars/1007711657012764702/62c2e12f0ed06e5a48b3361e5bd9c17a.webp?size=128",
+      "joinedAt": "2025-03-11T20:09:30.823Z",
+      "status": "offline"
+    },
+    {
+      "id": "521373653212856340",
+      "username": "bunnyfight",
+      "avatar": "https://cdn.discordapp.com/avatars/521373653212856340/4526787e18a2ef4119d7f1bd822a6f5f.webp?size=128",
+      "joinedAt": "2024-11-30T19:49:00.815Z",
+      "status": "offline"
+    },
+    {
+      "id": "645722927320268802",
+      "username": "tout.doux_le.loup",
+      "avatar": "https://cdn.discordapp.com/avatars/645722927320268802/1a43cbc77a3f84def448f727691d1846.webp?size=128",
+      "joinedAt": "2024-08-22T15:10:07.630Z",
+      "status": "offline"
+    },
+    {
+      "id": "195668172177670144",
+      "username": "lemonz0256",
+      "avatar": "https://cdn.discordapp.com/avatars/195668172177670144/c85c07f1c25a39f161de05d6059c3680.webp?size=128",
+      "joinedAt": "2025-03-19T20:29:39.832Z",
+      "status": "offline"
+    },
+    {
+      "id": "1042171951126433832",
+      "username": "shini2051",
+      "avatar": "https://cdn.discordapp.com/avatars/1042171951126433832/e8baefac5aeef55eb935dcc3dec4be14.webp?size=128",
+      "joinedAt": "2025-06-02T20:39:31.709Z",
+      "status": "offline"
+    },
+    {
+      "id": "664158172033974282",
+      "username": "exa_n",
+      "avatar": "https://cdn.discordapp.com/avatars/664158172033974282/bd59befa258723f8359f2198c85d28d3.webp?size=128",
+      "joinedAt": "2025-06-18T20:45:41.119Z",
+      "status": "offline"
+    },
+    {
+      "id": "450279699013304321",
+      "username": "koh_koooh",
+      "avatar": "https://cdn.discordapp.com/avatars/450279699013304321/a19d82978d6f7a837f4b373843122ad0.webp?size=128",
+      "joinedAt": "2023-03-07T15:24:35.592Z",
+      "status": "offline"
+    },
+    {
+      "id": "524964051009142787",
+      "username": "tkt_mec",
+      "avatar": "https://cdn.discordapp.com/avatars/524964051009142787/5afcf5e713e6f507998bd2286488c750.webp?size=128",
+      "joinedAt": "2025-05-05T17:58:50.222Z",
+      "status": "offline"
+    },
+    {
+      "id": "258850587834187776",
+      "username": "logdar",
+      "avatar": "https://cdn.discordapp.com/avatars/258850587834187776/44590584850730aaa16a2c0e5e9f2665.webp?size=128",
+      "joinedAt": "2025-06-28T11:24:32.795Z",
+      "status": "offline"
+    },
+    {
+      "id": "548851897226887189",
+      "username": "nana5735",
+      "avatar": "https://cdn.discordapp.com/avatars/548851897226887189/6ad1f37fcb60338dc28e45641d7391d7.webp?size=128",
+      "joinedAt": "2025-06-24T17:05:57.171Z",
+      "status": "offline"
+    },
+    {
+      "id": "242009676022153216",
+      "username": "eleska13",
+      "avatar": "https://cdn.discordapp.com/avatars/242009676022153216/802c884baaac8f6ac893da491e523cc2.webp?size=128",
+      "joinedAt": "2025-06-24T17:07:18.444Z",
+      "status": "offline"
+    },
+    {
+      "id": "720040437988982844",
+      "username": "ev3rxla",
+      "avatar": "https://cdn.discordapp.com/avatars/720040437988982844/2081ea903388d3a94b99af41f1f69bd7.webp?size=128",
+      "joinedAt": "2025-07-01T16:48:34.115Z",
+      "status": "offline"
+    },
+    {
+      "id": "195629800876933120",
+      "username": "tiikev",
+      "avatar": "https://cdn.discordapp.com/avatars/195629800876933120/7631f3a4eb0e85712142aeeb291c38ba.webp?size=128",
+      "joinedAt": "2025-04-30T18:31:21.396Z",
+      "status": "offline"
+    },
+    {
+      "id": "789524761293750272",
+      "username": "emeri14",
+      "avatar": "https://cdn.discordapp.com/avatars/789524761293750272/699301cdb8939b334054547ce56cf191.webp?size=128",
+      "joinedAt": "2025-06-24T17:09:41.266Z",
+      "status": "offline"
+    },
+    {
+      "id": "291540034006286346",
+      "username": "riquitoo95",
+      "avatar": "https://cdn.discordapp.com/avatars/291540034006286346/a_40aa2f10ff2ab07f665225122522da2d.gif?size=128",
+      "joinedAt": "2024-03-20T15:40:30.336Z",
+      "status": "offline"
+    },
+    {
+      "id": "388004695081222144",
+      "username": "salvadormusty",
+      "avatar": "https://cdn.discordapp.com/avatars/388004695081222144/5096b2e9e65c85cf5379d3b6ee839214.webp?size=128",
+      "joinedAt": "2024-11-13T02:40:23.733Z",
+      "status": "offline"
+    },
+    {
+      "id": "1190404709736009802",
+      "username": "euwfl9",
+      "avatar": "https://cdn.discordapp.com/avatars/1190404709736009802/554d8e1181a574eac79b7a3d6b0d3372.webp?size=128",
+      "joinedAt": "2025-06-20T20:08:53.971Z",
+      "status": "offline"
+    },
+    {
+      "id": "166997079623860224",
+      "username": "_al1",
+      "avatar": "https://cdn.discordapp.com/avatars/166997079623860224/a_e37c591c992807c00993fcbf4273825c.gif?size=128",
+      "joinedAt": "2024-08-14T20:03:16.003Z",
+      "status": "offline"
+    },
+    {
+      "id": "898648852796702822",
+      "username": "el_brioche",
+      "avatar": "https://cdn.discordapp.com/avatars/898648852796702822/a_fc341ee6d2d075f0d13160cfb88e92e7.gif?size=128",
+      "joinedAt": "2024-08-14T18:17:24.767Z",
+      "status": "offline"
+    },
+    {
+      "id": "429884794374062080",
+      "username": "sebeuh__",
+      "avatar": "https://cdn.discordapp.com/avatars/429884794374062080/82c020db85a5b63f951eb2cd85ed3c04.webp?size=128",
+      "joinedAt": "2025-06-24T17:13:34.155Z",
+      "status": "offline"
+    },
+    {
+      "id": "388025470815436801",
+      "username": "k197210",
+      "avatar": "https://cdn.discordapp.com/avatars/388025470815436801/ef2e6ced56fc7cb4db2bc5654849d624.webp?size=128",
+      "joinedAt": "2023-08-04T16:34:39.099Z",
+      "status": "offline"
+    },
+    {
+      "id": "1223007154462527711",
+      "username": "lyze_eriah",
+      "avatar": "https://cdn.discordapp.com/avatars/1223007154462527711/52509cc667405a93034a53989e632ce2.webp?size=128",
+      "joinedAt": "2024-08-14T19:00:31.541Z",
+      "status": "offline"
+    },
+    {
+      "id": "828944856339841025",
+      "username": "garance0925",
+      "avatar": "https://cdn.discordapp.com/avatars/828944856339841025/4616d68588ed8f6b9111ee5b4e4bc0a4.webp?size=128",
+      "joinedAt": "2024-08-30T22:00:56.560Z",
+      "status": "offline"
+    },
+    {
+      "id": "785919097321685053",
+      "username": "ryantoutcourt",
+      "avatar": "https://cdn.discordapp.com/avatars/785919097321685053/c029a1c740bdb5ef1da369376e2a846c.webp?size=128",
+      "joinedAt": "2024-10-11T20:35:58.549Z",
+      "status": "offline"
+    },
+    {
+      "id": "267358496406765589",
+      "username": "onialexis",
+      "avatar": "https://cdn.discordapp.com/avatars/267358496406765589/bd1cfe50725ad89dc0d60eb04882d235.webp?size=128",
+      "joinedAt": "2025-06-24T18:56:00.384Z",
+      "status": "offline"
+    },
+    {
+      "id": "292753316226531328",
+      "username": "bububb",
+      "avatar": "https://cdn.discordapp.com/avatars/292753316226531328/7c62422632e724ce7aa76d20f1c8ff58.webp?size=128",
+      "joinedAt": "2024-07-20T00:00:53.160Z",
+      "status": "offline"
+    },
+    {
+      "id": "930839486127030332",
+      "username": "nrzlebest",
+      "avatar": "https://cdn.discordapp.com/avatars/930839486127030332/8eb69fda971d126d5e6e1efb2bcf6b4e.webp?size=128",
+      "joinedAt": "2025-03-12T16:35:11.397Z",
+      "status": "offline"
+    },
+    {
+      "id": "475702210378858506",
+      "username": "lez0938",
+      "avatar": "https://cdn.discordapp.com/avatars/475702210378858506/44763bfc96fb7ce5c832b2b26a18cdf3.webp?size=128",
+      "joinedAt": "2024-02-23T22:24:40.470Z",
+      "status": "offline"
+    },
+    {
+      "id": "442750754785067019",
+      "username": "shynaks",
+      "avatar": "https://cdn.discordapp.com/avatars/442750754785067019/7baafb09023c1f4c4222f53405601801.webp?size=128",
+      "joinedAt": "2024-05-31T16:09:57.934Z",
+      "status": "offline"
+    },
+    {
+      "id": "716711022051852328",
+      "username": "anawell_",
+      "avatar": "https://cdn.discordapp.com/avatars/716711022051852328/5b83985052a2055da2df3db06df60e3e.webp?size=128",
+      "joinedAt": "2025-06-24T17:39:44.487Z",
+      "status": "offline"
+    },
+    {
+      "id": "756051237543215145",
+      "username": "jumpo_",
+      "avatar": "https://cdn.discordapp.com/avatars/756051237543215145/9f6a4b84f28445ba4428c15d393c8d07.webp?size=128",
+      "joinedAt": "2025-06-24T21:27:16.286Z",
+      "status": "offline"
+    },
+    {
+      "id": "310826491090960394",
+      "username": ".wanks",
+      "avatar": "https://cdn.discordapp.com/avatars/310826491090960394/94088227738188411fc21f9367b03dff.webp?size=128",
+      "joinedAt": "2022-12-13T23:13:19.356Z",
+      "status": "offline"
+    },
+    {
+      "id": "410092579636641812",
+      "username": "robii_ii",
+      "avatar": "https://cdn.discordapp.com/avatars/410092579636641812/dda334c4c40f98ae1535a08db4fe6612.webp?size=128",
+      "joinedAt": "2024-10-11T20:46:20.260Z",
+      "status": "offline"
+    },
+    {
+      "id": "781917823340773407",
+      "username": "luddin",
+      "avatar": "https://cdn.discordapp.com/avatars/781917823340773407/4f7628d8f9ed5af92db890f75552b761.webp?size=128",
+      "joinedAt": "2022-07-07T12:54:28.799Z",
+      "status": "offline"
+    },
+    {
+      "id": "1115690856339484743",
+      "username": "stargaze.mp3",
+      "avatar": "https://cdn.discordapp.com/avatars/1115690856339484743/a_525fbe8f1b5c7c6a7684b932be232bb5.gif?size=128",
+      "joinedAt": "2025-06-26T20:17:28.995Z",
+      "status": "offline"
+    },
+    {
+      "id": "219583659194187777",
+      "username": "boyuu_",
+      "avatar": "https://cdn.discordapp.com/avatars/219583659194187777/de772fd6d1a33f2138d5dc41d9f0be08.webp?size=128",
+      "joinedAt": "2025-02-13T21:55:11.612Z",
+      "status": "offline"
+    },
+    {
+      "id": "1206053705149841428",
+      "username": "kyusaan",
+      "avatar": "https://cdn.discordapp.com/avatars/1206053705149841428/12c304a64a1f12b62a30abb432cbb427.webp?size=128",
+      "joinedAt": "2025-01-10T01:17:00.768Z",
+      "status": "offline"
+    },
+    {
+      "id": "147902805779152896",
+      "username": "raeru",
+      "avatar": "https://cdn.discordapp.com/avatars/147902805779152896/6dffda07f6ad656a230053a943a4fd07.webp?size=128",
+      "joinedAt": "2025-06-24T17:06:39.763Z",
+      "status": "offline"
+    },
+    {
+      "id": "671342690314485762",
+      "username": "nyanles",
+      "avatar": "https://cdn.discordapp.com/avatars/671342690314485762/2d202699fe8d7fc7d686578cad97fce3.webp?size=128",
+      "joinedAt": "2024-03-23T16:04:32.133Z",
+      "status": "offline"
+    },
+    {
+      "id": "330080213301985290",
+      "username": "yvsekai",
+      "avatar": "https://cdn.discordapp.com/avatars/330080213301985290/6bb0754b162988bafaac03e2bae65b34.webp?size=128",
+      "joinedAt": "2024-03-18T15:51:04.142Z",
+      "status": "offline"
+    },
+    {
+      "id": "261476546362081280",
+      "username": "yuta93_",
+      "avatar": "https://cdn.discordapp.com/avatars/261476546362081280/ba057def64f7899f0dc6b1e07526787b.webp?size=128",
+      "joinedAt": "2024-08-08T16:48:34.268Z",
+      "status": "offline"
+    },
+    {
+      "id": "1387326221511168061",
+      "username": "test_kint",
+      "avatar": "https://cdn.discordapp.com/embed/avatars/3.png",
+      "joinedAt": "2025-07-10T16:12:08.574Z",
+      "status": "offline"
+    },
+    {
+      "id": "302180998517620736",
+      "username": "kaazar.",
+      "avatar": "https://cdn.discordapp.com/avatars/302180998517620736/9d7898cca6812c17e6339ffc5fa4e233.webp?size=128",
+      "joinedAt": "2025-03-21T21:31:02.445Z",
+      "status": "offline"
+    },
+    {
+      "id": "750036102244597901",
+      "username": ".bloodthunder",
+      "avatar": "https://cdn.discordapp.com/avatars/750036102244597901/bf24c645919e9e71f9556c5ece2a274c.webp?size=128",
+      "joinedAt": "2024-03-25T20:24:38.197Z",
+      "status": "offline"
+    },
+    {
+      "id": "120440425017376768",
+      "username": "synckramer",
+      "avatar": "https://cdn.discordapp.com/avatars/120440425017376768/9c53435aea9c1c38881d2835791fb90f.webp?size=128",
+      "joinedAt": "2025-06-24T17:07:08.565Z",
+      "status": "offline"
+    },
+    {
+      "id": "280094678114893825",
+      "username": "sosa93.paz",
+      "avatar": "https://cdn.discordapp.com/avatars/280094678114893825/3a410a92663e591b7a3cabbda7eed8be.webp?size=128",
+      "joinedAt": "2024-03-23T12:37:32.086Z",
+      "status": "offline"
+    },
+    {
+      "id": "978031862058483792",
+      "username": "james_nox",
+      "avatar": "https://cdn.discordapp.com/avatars/978031862058483792/2462cf0961535d566b1da2a5dd63c865.webp?size=128",
+      "joinedAt": "2025-01-03T19:16:47.287Z",
+      "status": "offline"
+    },
+    {
+      "id": "559477121609760778",
+      "username": "6lzp",
+      "avatar": "https://cdn.discordapp.com/avatars/559477121609760778/2e6fb0479bafd4205b15c811211cbf9e.webp?size=128",
+      "joinedAt": "2025-06-24T17:01:27.941Z",
+      "status": "offline"
+    },
+    {
+      "id": "1179405476123910284",
+      "username": "vaal_sx",
+      "avatar": "https://cdn.discordapp.com/avatars/1179405476123910284/ff99039e054b931b0d9bbae3653823bc.webp?size=128",
+      "joinedAt": "2023-11-29T15:48:14.069Z",
+      "status": "offline"
+    },
+    {
+      "id": "362670039482236940",
+      "username": "showry",
+      "avatar": "https://cdn.discordapp.com/avatars/362670039482236940/44199d99fe6020a81e6cd9a8f6cd1453.webp?size=128",
+      "joinedAt": "2022-05-16T16:11:26.281Z",
+      "status": "offline"
+    },
+    {
+      "id": "1155092541734142033",
+      "username": ".azh_",
+      "avatar": "https://cdn.discordapp.com/avatars/1155092541734142033/4eb7ca3c90f2be0c74c90afe71418d16.webp?size=128",
+      "joinedAt": "2025-06-26T23:57:41.868Z",
+      "status": "offline"
+    },
+    {
+      "id": "633035539863568396",
+      "username": "bajidr",
+      "avatar": "https://cdn.discordapp.com/avatars/633035539863568396/f0c64f88abe43a75bdef9a40fae6864e.webp?size=128",
+      "joinedAt": "2025-06-26T23:00:13.577Z",
+      "status": "offline"
+    }
+  ]
+}
