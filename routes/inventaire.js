@@ -1,74 +1,157 @@
+// /routes/inventaire.js (version finale, complète et corrigée)
+
 const express = require('express');
 const router = express.Router();
-
-// Chemin corrigé pour remonter du dossier 'routes' à la racine
+const fs = require('fs');
+const path = require('path');
 const {
     loadInventaire,
-    addPurchase,
     saveInventaire,
     loadEffects,
-    saveEffects
+    saveEffects,
 } = require('../inventaire');
+const { loadCurrency, saveCurrency } = require('../currency.js');
 
-// Vos routes GET et POST existantes restent ici...
-router.get('/:userId', (req, res) => {
-    try {
-        const inventaire = loadInventaire();
-        res.json(inventaire[req.params.userId] || {});
-    } catch (e) { res.status(500).json({e})}
-});
+const LOTTERY_FILE = path.join(__dirname, '../lottery.json');
 
-router.post('/:userId', (req, res) => {
-    try {
-        addPurchase(req.params.userId, req.body.itemId);
-        res.json({ success: true });
-    } catch (e) { res.status(500).json({e})}
-});
+const loadJSON = (filePath) => fs.existsSync(filePath) ? JSON.parse(fs.readFileSync(filePath, 'utf8')) : {};
+const saveJSON = (filePath, data) => fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
 
+module.exports = function(client, redisClient) {
 
-// --- ROUTE MANQUANTE À AJOUTER ---
-router.post('/use', (req, res) => {
-    const { userId, itemId } = req.body;
+    // ✅ Fonction corrigée pour utiliser les listes Redis (la "boîte aux lettres")
+    const sendMessageToUserMailbox = async (userId, data) => {
+        const eventPayload = {
+            targetUserId: userId,
+            ...data
+        };
+        try {
+            // Utilise RPUSH pour ajouter le message à la fin de la liste de l'utilisateur
+            await redisClient.rPush(`mailbox:${userId}`, JSON.stringify(eventPayload));
+            console.log(`[Mailbox] Message ajouté à la boîte de l'utilisateur ${userId}`);
+        } catch (error) {
+            console.error("[Mailbox] Erreur lors de l'ajout du message:", error);
+        }
+    };
 
-    if (!userId || !itemId) {
-        return res.status(400).json({ message: "Données manquantes." });
-    }
+    router.get('/:userId', (req, res) => {
+        try {
+            const inventaire = loadInventaire();
+            res.json(inventaire[req.params.userId] || {});
+        } catch (e) {
+            console.error("Erreur dans GET /api/inventaire/:userId", e);
+            res.status(500).json({ error: 'Erreur serveur' });
+        }
+    });
 
-    try {
-        const inventaire = loadInventaire();
-        const effects = loadEffects();
-        const userInventory = inventaire[userId];
+    router.post('/use', async (req, res) => {
+        const { userId, itemId, extraData } = req.body;
 
-        if (!userInventory || !userInventory[itemId] || userInventory[itemId].quantity < 1) {
-            return res.status(400).json({ message: "Vous ne possédez pas cet objet." });
+        if (!userId || !itemId) {
+            return res.status(400).json({ message: "Données manquantes : userId et itemId sont requis." });
         }
 
-        if (itemId === 'kint_sword') {
-            const currentEffect = effects[userId];
-            if (currentEffect && new Date(currentEffect.expiresAt).getTime() > Date.now()) {
-                return res.status(400).json({ message: 'Un effet de l\'épée est déjà actif.' });
+        try {
+            const inventaire = loadInventaire();
+            const userInventory = inventaire[userId];
+            const realItemName = Object.keys(userInventory || {}).find(key => key.toLowerCase() === itemId.toLowerCase());
+
+            if (!realItemName || userInventory[realItemName].quantity < 1) {
+                return res.status(400).json({ message: "Vous ne possédez pas cet objet ou en quantité insuffisante." });
+            }
+            
+            // On retire l'objet de l'inventaire AVANT d'envoyer la demande pour éviter les abus
+            userInventory[realItemName].quantity -= 1;
+            if (userInventory[realItemName].quantity <= 0) {
+                delete userInventory[realItemName];
+            }
+            saveInventaire(inventaire);
+
+            const normalizedItemId = realItemName.toLowerCase();
+
+            if (normalizedItemId === 'my champ' || normalizedItemId === 'swap lane') {
+                const { targetUserId, champName } = extraData;
+                if (!targetUserId) {
+                     // Si la cible n'est pas valide, on rend l'objet
+                    userInventory[realItemName] = userInventory[realItemName] || { quantity: 0 };
+                    userInventory[realItemName].quantity += 1;
+                    saveInventaire(inventaire);
+                    return res.status(400).json({ message: "Aucun joueur cible n'a été sélectionné." });
+                }
+                if (normalizedItemId === 'my champ' && !champName) {
+                    // Si le champion n'est pas valide, on rend l'objet
+                    userInventory[realItemName] = userInventory[realItemName] || { quantity: 0 };
+                    userInventory[realItemName].quantity += 1;
+                    saveInventaire(inventaire);
+                    return res.status(400).json({ message: "Le nom du champion est requis." });
+                }
+
+                const initiatorUser = await client.users.fetch(userId).catch(() => null);
+                if (!initiatorUser) return res.status(404).json({ message: "Utilisateur initiateur introuvable." });
+                
+                const interactionId = `interaction_${Date.now()}`;
+                const interactionData = { fromUserId: userId, targetUserId, itemId: normalizedItemId, itemName: realItemName, champName };
+                // On sauvegarde l'objet utilisé dans Redis au cas où il faudrait le rendre (refus)
+                await redisClient.set(`interaction:${interactionId}`, JSON.stringify(interactionData), { EX: 120 });
+                
+                // ✅ Appel de la fonction corrigée
+                await sendMessageToUserMailbox(targetUserId, {
+                    type: 'interaction_request',
+                    payload: {
+                        interactionId,
+                        itemName: realItemName,
+                        fromUser: { id: userId, username: initiatorUser.username },
+                        ...(champName && { champName })
+                    }
+                });
+                
+                return res.status(200).json({ message: `La demande a été envoyée à l'utilisateur...` });
+            }
+            
+            if (normalizedItemId === 'ticket coin million') {
+                const { numbers } = extraData;
+                if (!Array.isArray(numbers) || numbers.length !== 5 || numbers.some(n => isNaN(n) || n < 1 || n > 50)) {
+                    // L'objet a déjà été retiré, on ne le rend pas car c'est une erreur de l'utilisateur
+                    return res.status(400).json({ message: "Veuillez fournir 5 numéros valides entre 1 et 50." });
+                }
+                
+                const lotteryData = loadJSON(LOTTERY_FILE);
+                if (!lotteryData[userId]) lotteryData[userId] = [];
+                lotteryData[userId].push(numbers);
+                saveJSON(LOTTERY_FILE, lotteryData);
+                
+                // L'inventaire a déjà été sauvegardé au début
+                console.log(`[Lotterie] ${userId} a joué les numéros via le dashboard : ${numbers.join(', ')}`);
+                return res.status(200).json({ message: `Vous avez joué les numéros : ${numbers.join(", ")}. Bonne chance ! 🍀` });
             }
 
-            userInventory[itemId].quantity -= 1;
-            if (userInventory[itemId].quantity === 0) delete userInventory[itemId];
-
-            effects[userId] = {
-                type: 'epee-du-kint',
-                expiresAt: new Date(Date.now() + 3600 * 1000).toISOString()
-            };
-
+            if (normalizedItemId === 'épée du kint') {
+                const effects = loadEffects();
+                if (effects[userId] && new Date(effects[userId].expiresAt).getTime() > Date.now()) {
+                    // L'effet est déjà actif, on rend l'objet
+                    userInventory[realItemName] = userInventory[realItemName] || { quantity: 0 };
+                    userInventory[realItemName].quantity += 1;
+                    saveInventaire(inventaire);
+                    return res.status(400).json({ message: 'Un effet de l\'épée est déjà actif.' });
+                }
+                effects[userId] = { type: 'epee-du-kint', expiresAt: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString() };
+                saveEffects(effects);
+                
+                // L'inventaire a déjà été sauvegardé
+                return res.status(200).json({ message: 'Épée du KINT activée !' });
+            }
+            
+            // Si l'objet n'a pas d'action, on le rend à l'inventaire
+            userInventory[realItemName] = userInventory[realItemName] || { quantity: 0 };
+            userInventory[realItemName].quantity += 1;
             saveInventaire(inventaire);
-            saveEffects(effects);
+            return res.status(400).json({ message: "Cet objet n'a pas d'action définie." });
 
-            return res.status(200).json({ message: 'Épée du KINT activée !' });
+        } catch (error) {
+            console.error(`Erreur critique sur la route /use:`, error);
+            return res.status(500).json({ message: 'Erreur interne du serveur du bot.' });
         }
+    });
 
-        return res.status(400).json({ message: "Cet objet n'est pas utilisable." });
-
-    } catch (error) {
-        console.error(`ERREUR DANS /api/inventory/use:`, error);
-        res.status(500).json({ message: 'Erreur interne du serveur du bot.' });
-    }
-});
-
-module.exports = router;
+    return router;
+};
