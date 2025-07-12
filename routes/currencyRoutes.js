@@ -1,10 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const fs = require('fs').promises; // Utilisation de la version asynchrone pour plus de fiabilité
+const fs = require('fs').promises;
 const path = require('path');
 
-// Chemin vers le fichier qui stocke les données de monnaie et de cooldown
-// Ce fichier est uniquement pour le bonus du dashboard.
 const CURRENCY_FILE = path.join(__dirname, '../currency.json');
 
 /**
@@ -16,11 +14,9 @@ async function readCurrencyData() {
         const data = await fs.readFile(CURRENCY_FILE, 'utf8');
         return JSON.parse(data);
     } catch (error) {
-        // Si le fichier n'existe pas, on retourne un objet vide pour éviter une erreur.
         if (error.code === 'ENOENT') {
             return {};
         }
-        // Pour les autres erreurs, on les propage.
         throw error;
     }
 }
@@ -30,42 +26,52 @@ async function readCurrencyData() {
  * @param {Object} data - Les données à écrire.
  */
 async function writeCurrencyData(data) {
-    // Écrit les données de manière "atomique" pour éviter la corruption en cas de crash.
     await fs.writeFile(CURRENCY_FILE, JSON.stringify(data, null, 2));
 }
 
-// --- ROUTE DE BONUS QUOTIDIEN SPÉCIFIQUE AU DASHBOARD ---
+
+// --- ROUTE DE RÉCOMPENSE MODIFIÉE ---
 router.post('/claim/:userId', async (req, res) => {
     const { userId } = req.params;
+    // ▼▼▼ MODIFICATION ICI ▼▼▼
+    // On récupère le "type" envoyé par le dashboard ('bonus')
+    const { type } = req.body; 
     const now = Date.now();
     const twentyFourHours = 24 * 60 * 60 * 1000;
 
+    // Si aucun type n'est spécifié, c'est une erreur.
+    if (!type) {
+        return res.status(400).json({ error: "Le type de récompense ('bonus') est manquant." });
+    }
+
     try {
         const currencyData = await readCurrencyData();
-        // Récupère les données de l'utilisateur ou initialise un nouvel objet.
-        const userData = currencyData[userId] || { balance: 0, lastClaim: null };
+        const userData = currencyData[userId] || { balance: 0, lastDaily: null, lastBonus: null };
         
-        // Vérifie si 24h se sont écoulées depuis le dernier claim.
-        if (userData.lastClaim && (now - userData.lastClaim < twentyFourHours)) {
-            const timeLeft = twentyFourHours - (now - userData.lastClaim);
-            return res.status(429).json({ 
-                error: "Vous devez encore attendre avant de pouvoir réclamer votre prochain bonus.", 
-                timeLeft 
+        // ▼▼▼ MODIFICATION ICI ▼▼▼
+        // On choisit le champ à vérifier en fonction du type de récompense
+        const fieldToCheck = 'lastBonus'; // Le dashboard n'enverra que pour le bonus
+        const lastClaimTimestamp = userData[fieldToCheck];
+
+        if (lastClaimTimestamp && (now - lastClaimTimestamp < twentyFourHours)) {
+            const timeLeft = twentyFourHours - (now - lastClaimTimestamp);
+            return res.status(429).json({
+                error: "Vous devez encore attendre avant de pouvoir réclamer votre prochain bonus.",
+                timeLeft
             });
         }
 
-        // Met à jour le solde et le timestamp du dernier claim.
+        // On met à jour le solde et le timestamp du bon minuteur
         userData.balance = (userData.balance || 0) + 500;
-        userData.lastClaim = now;
+        userData[fieldToCheck] = now;
         currencyData[userId] = userData;
         
-        // Sauvegarde les nouvelles données dans le fichier.
         await writeCurrencyData(currencyData);
 
         console.log(`[BONUS DASHBOARD] ${userId} a réclamé 500 pièces.`);
-        res.json({ 
-            success: true, 
-            message: "Vous avez reçu votre bonus de 500 pièces !", 
+        res.json({
+            success: true,
+            message: "Vous avez reçu votre bonus de 500 pièces !",
             newBalance: userData.balance,
         });
     } catch (error) {
@@ -75,14 +81,18 @@ router.post('/claim/:userId', async (req, res) => {
 });
 // -----------------------------------------------------------
 
-// Route pour récupérer le solde et le dernier claim d'un utilisateur.
+// Route pour récupérer le solde et les DEUX derniers claims.
 router.get('/:userId', async (req, res) => {
     try {
         const currencyData = await readCurrencyData();
-        const userCurrency = currencyData[req.params.userId] || { balance: 0, lastClaim: null };
-        res.json({ 
+        const userCurrency = currencyData[req.params.userId] || { balance: 0, lastDaily: null, lastBonus: null };
+        
+        // ▼▼▼ MODIFICATION ICI ▼▼▼
+        // On renvoie les deux champs au dashboard
+        res.json({
             balance: userCurrency.balance || 0,
-            lastClaim: userCurrency.lastClaim || null 
+            lastDaily: userCurrency.lastDaily || null,
+            lastBonus: userCurrency.lastBonus || null, 
         });
     } catch (error) {
         res.status(500).json({ error: 'Erreur serveur' });
@@ -99,10 +109,13 @@ router.post('/:userId', async (req, res) => {
     try {
         const currencyData = await readCurrencyData();
         const oldData = currencyData[req.params.userId] || {};
-        // Met à jour le solde tout en conservant le timestamp du dernier claim.
+        
+        // ▼▼▼ MODIFICATION ICI ▼▼▼
+        // On conserve les deux minuteurs lors de la mise à jour manuelle
         currencyData[req.params.userId] = {
             balance: coins,
-            lastClaim: oldData.lastClaim || null
+            lastDaily: oldData.lastDaily || null,
+            lastBonus: oldData.lastBonus || null
         };
         await writeCurrencyData(currencyData);
         res.json({ success: true, userId: req.params.userId, coins });
@@ -111,7 +124,7 @@ router.post('/:userId', async (req, res) => {
     }
 });
 
-// Route pour obtenir le classement des monnaies.
+// Route pour obtenir le classement des monnaies (pas de changement ici).
 router.get('/', async (req, res) => {
     try {
         const currencyData = await readCurrencyData();

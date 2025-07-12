@@ -1,13 +1,9 @@
-// index.js (version finale, complète et corrigée avec Redis et SSE)
+// index.js (version sans Redis, SSE et logs API)
 
 require('dotenv').config();
 
 if (!process.env.BOT_TOKEN || !process.env.CLIENT_ID) {
     console.error('ERREUR FATALE: BOT_TOKEN ou CLIENT_ID est manquant dans le fichier .env');
-    process.exit(1);
-}
-if (!process.env.REDIS_URL) {
-    console.error("ERREUR FATALE : La variable d'environnement REDIS_URL est manquante dans votre fichier .env !");
     process.exit(1);
 }
 
@@ -22,19 +18,9 @@ const readline = require('readline');
 const cron = require('node-cron');
 const express = require("express");
 const cors = require("cors");
-const { createClient } = require('redis');
 
 const app = express();
 const server = http.createServer(app);
-
-// --- Structures pour la communication temps réel ---
-let sseClients = [];
-
-// --- Connexion Redis ---
-const redisClient = createClient({ url: process.env.REDIS_URL });
-const subscriber = redisClient.duplicate();
-redisClient.on('error', err => console.error('[Redis Client Error]', err));
-subscriber.on('error', err => console.error('[Redis Subscriber Error]', err));
 
 // --- Importation des modules locaux ---
 const { checkAchievements } = require('./commands/succes.js');
@@ -93,15 +79,12 @@ client.maintenance = { isActive: false, startedAt: null };
 const OWNER_ID = '1206053705149841428';
 
 let logs = [];
-// Correction : La fonction est définie ici, mais sera attachée au client.
 const addLog = (message) => {
     const logEntry = { timestamp: new Date().toISOString(), log: message };
     logs.push(logEntry);
     if (logs.length > 100) logs.shift();
-    // Optionnel : Affiche aussi les logs en console pour un débogage en direct
     console.log(`[LOG] ${message}`);
 };
-// On attache la fonction au client pour un accès global et cohérent
 client.addLog = addLog;
 client.logs = logs;
 
@@ -115,7 +98,7 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use('/api/inventaire', inventaireRoutes(client, redisClient));
+app.use('/api/inventaire', inventaireRoutes(client));
 app.use('/api/xp', xpRoutes);
 app.use('/api/success', successRoute);
 app.use('/api', titreRoutes);
@@ -131,103 +114,7 @@ app.use('/api', kintLogsRoute(client));
 const feedbackRoute = require('./routes/feedbackRoute')(client);
 app.use('/api', feedbackRoute);
 
-app.get('/api/events', (req, res) => {
-    // AJOUT LOG: Suivi des connexions SSE
-    client.addLog(`[API] Nouvelle connexion SSE entrante pour l'userId : ${req.query.userId || 'non spécifié'}.`);
-    res.setHeader('Content-Type', 'text/event-stream');
-    res.setHeader('Cache-Control', 'no-cache');
-    res.setHeader('Connection', 'keep-alive');
-    res.flushHeaders();
-    const userId = req.query.userId;
-    if (!userId) { return res.end(); }
-    
-    const clientId = Date.now();
-    console.log(`[SSE] Client connecté: ${clientId} pour l'utilisateur ${userId}.`);
-    res.write(`data: ${JSON.stringify({ type: 'welcome' })}\n\n`);
-
-    let isConnected = true;
-    const checkMailbox = async () => {
-        if (!isConnected) return;
-        try {
-            const message = await redisClient.lPop(`mailbox:${userId}`);
-            if (message) {
-                // AJOUT LOG: Courrier trouvé et envoyé
-                client.addLog(`[Mailbox] Courrier envoyé à ${userId} via SSE.`);
-                console.log(`[Mailbox] Courrier trouvé pour ${userId}. Envoi.`);
-                res.write(`data: ${message}\n\n`);
-            }
-        } catch (error) {
-            console.error(`[Mailbox] Erreur pour ${userId}:`, error);
-        } finally {
-            if (isConnected) setTimeout(checkMailbox, 1500);
-        }
-    };
-    checkMailbox();
-
-    req.on('close', () => {
-        isConnected = false;
-        // AJOUT LOG: Déconnexion SSE
-        client.addLog(`[API] Déconnexion SSE pour l'userId : ${userId}.`);
-        console.log(`[SSE] Client déconnecté pour ${userId}.`);
-    });
-});
-
-app.post('/api/interaction-response', async (req, res) => {
-    // AJOUT LOG: Réception d'une réponse d'interaction
-    client.addLog(`[API] Réponse d'interaction reçue pour l'ID: ${req.body.interactionId}`);
-    const { interactionId, accepted, respondingUserId } = req.body;
-    const interactionJSON = await redisClient.get(`interaction:${interactionId}`);
-    if (!interactionJSON) { 
-        client.addLog(`[API-ERROR] Interaction ${interactionId} introuvable dans Redis.`);
-        return res.status(404).json({ message: "Interaction expirée ou introuvable." });
-    }
-    
-    await redisClient.del(`interaction:${interactionId}`);
-    
-    const interactionData = JSON.parse(interactionJSON);
-    if (interactionData.targetUserId !== respondingUserId) { 
-        client.addLog(`[API-WARN] Tentative non autorisée sur l'interaction ${interactionId} par ${respondingUserId}.`);
-        return res.status(403).json({ message: "Non autorisé." });
-    }
-    
-    const fromUser = await client.users.fetch(interactionData.fromUserId).catch(() => null);
-    const targetUser = await client.users.fetch(interactionData.targetUserId).catch(() => null);
-    if (!fromUser || !targetUser) { 
-        client.addLog(`[API-ERROR] Utilisateur introuvable pour l'interaction ${interactionId}.`);
-        return res.status(404).json({ message: "Utilisateur introuvable." });
-    }
-
-    try {
-        if (accepted) {
-            await fromUser.send(`✅ **${targetUser.username}** a accepté votre demande pour **${interactionData.itemName}** !`);
-            // AJOUT LOG: Interaction acceptée
-            client.addLog(`[Interaction] ${targetUser.username} a ACCEPTÉ la demande de ${fromUser.username} pour ${interactionData.itemName}.`);
-            res.status(200).json({ message: `Vous avez accepté la demande de ${fromUser.username}.` });
-        } else {
-            const inventaire = loadInventaire();
-            if (!inventaire[fromUser.id]) inventaire[fromUser.id] = {};
-            if (!inventaire[fromUser.id][interactionData.itemName]) {
-                inventaire[fromUser.id][interactionData.itemName] = { quantity: 0 };
-            }
-            inventaire[fromUser.id][interactionData.itemName].quantity += 1;
-            saveInventaire(inventaire);
-            console.log(`[Interaction] Objet ${interactionData.itemName} rendu à ${fromUser.username} après refus.`);
-            // AJOUT LOG: Interaction refusée
-            client.addLog(`[Interaction] ${targetUser.username} a REFUSÉ la demande de ${fromUser.username} pour ${interactionData.itemName}. Objet rendu.`);
-
-            await fromUser.send(`❌ **${targetUser.username}** a refusé votre demande pour **${interactionData.itemName}**. L'objet vous a été rendu.`);
-            res.status(200).json({ message: `Vous avez refusé la demande.` });
-        }
-    } catch (error) {
-        console.error("Erreur traitement réponse:", error);
-        client.addLog(`[API-ERROR] Erreur lors du traitement de la réponse à l'interaction ${interactionId}: ${error.message}`);
-        res.status(500).json({ message: "Erreur interne." });
-    }
-});
-
 app.get('/api/serverinfo', async (req, res) => {
-    // AJOUT LOG: Requête sur /api/serverinfo
-    client.addLog('[API] Requête reçue sur /api/serverinfo.');
     try {
         const guild = client.guilds.cache.first();
         if (!guild) return res.status(404).json({ error: 'Serveur non trouvé.' });
@@ -246,13 +133,10 @@ app.get('/api/serverinfo', async (req, res) => {
         res.json(info);
     } catch (error) {
         console.error('Erreur API /api/serverinfo :', error);
-        // AJOUT LOG: Erreur sur /api/serverinfo
-        client.addLog(`[API-ERROR] Erreur sur /api/serverinfo: ${error.message}`);
         res.status(500).json({ error: 'Impossible de récupérer les infos serveur.' });
     }
 });
 app.get("/api/logs", (req, res) => {
-    // Pas besoin de log ici pour ne pas créer de boucle infinie de logs
     res.json({ logs });
 });
 app.get("/", (req, res) => res.send("API du bot est en ligne !"));
@@ -261,22 +145,16 @@ const PORT = process.env.PORT || 20077;
 
 (async () => {
     try {
-        await redisClient.connect();
-        console.log('[Redis] Client connecté avec succès.');
-        // AJOUT LOG: Connexion Redis réussie
-        addLog('💾 Connexion à Redis réussie.'); // client.addLog non dispo avant le login
         server.listen(PORT, () => console.log(`✅ Serveur API lancé sur le port ${PORT}`));
-        addLog(`🌐 L'API Express écoute sur le port ${PORT}.`); // idem
         await client.login(process.env.BOT_TOKEN);
     } catch (error) {
         console.error("ERREUR FATALE AU DÉMARRAGE :", error);
-        addLog(`❌ ERREUR FATALE AU DÉMARRAGE: ${error.message}`); // idem
+        addLog(`❌ ERREUR FATALE AU DÉMARRAGE: ${error.message}`);
         process.exit(1);
     }
 })();
 
 const deployCommands = async () => {
-    // AJOUT LOG: Début du déploiement des commandes
     client.addLog('🛠️ Déploiement des commandes en cours...');
     const rest = new REST({ version: '10' }).setToken(process.env.BOT_TOKEN);
     const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
@@ -290,11 +168,9 @@ const deployCommands = async () => {
     try {
         await rest.put(Routes.applicationCommands(process.env.CLIENT_ID), { body: commands });
         console.log("✅ Commandes déployées !");
-        // AJOUT LOG: Déploiement réussi
         client.addLog(`✅ ${commands.length} commandes (/) ont été déployées avec succès.`);
     } catch (error) {
         console.error("Erreur lors du déploiement des commandes :", error);
-        // AJOUT LOG: Erreur de déploiement
         client.addLog(`❌ Erreur lors du déploiement des commandes : ${error.message}`);
     }
 };
@@ -315,28 +191,26 @@ client.once('ready', async () => {
     client.addLog("🎭 Présence du bot mise à jour.");
 });
 
-client.on('guildMemberAdd', member => { 
+client.on('guildMemberAdd', member => {
     client.addLog(`➕ ${member.user.tag} a rejoint le serveur.`);
-    let info = loadServerInfo(); 
-    info.memberCount++; 
-    saveServerInfo(info); 
+    let info = loadServerInfo();
+    info.memberCount++;
+    saveServerInfo(info);
 });
-client.on('guildMemberRemove', member => { 
+client.on('guildMemberRemove', member => {
     client.addLog(`➖ ${member.user.tag} a quitté le serveur.`);
-    let info = loadServerInfo(); 
-    info.memberCount--; 
-    saveServerInfo(info); 
+    let info = loadServerInfo();
+    info.memberCount--;
+    saveServerInfo(info);
 });
-client.on('messageCreate', message => { 
-    if (message.author.bot) return; 
-    // AJOUT LOG: Message reçu (peut être spammant, donc commenté par défaut)
-    // client.addLog(`💬 Message de ${message.author.tag} dans #${message.channel.name}`);
-    let info = loadServerInfo(); 
-    info.messageCount++; 
-    const day = new Date().getDay(); 
-    if (!info.messagesLast7Days) info.messagesLast7Days = [0, 0, 0, 0, 0, 0, 0]; 
-    info.messagesLast7Days[day]++; 
-    saveServerInfo(info); 
+client.on('messageCreate', message => {
+    if (message.author.bot) return;
+    let info = loadServerInfo();
+    info.messageCount++;
+    const day = new Date().getDay();
+    if (!info.messagesLast7Days) info.messagesLast7Days = [0, 0, 0, 0, 0, 0, 0];
+    info.messagesLast7Days[day]++;
+    saveServerInfo(info);
 });
 
 const TEMP_VOICE_HUB_ID = '1387423224182079578';
@@ -362,9 +236,9 @@ client.on('voiceStateUpdate', async (oldState, newState) => {
             await member.voice.setChannel(newChannel);
             tempChannels.set(newChannel.id, member.id);
             client.addLog(`🎤 Salon vocal temporaire créé pour ${member.user.tag}: ${newChannel.name}`);
-        } catch (error) { 
+        } catch (error) {
             client.addLog(`❌ Erreur création salon vocal pour ${member.user.tag}: ${error.message}`);
-            console.error("Erreur création salon:", error); 
+            console.error("Erreur création salon:", error);
         }
     }
     if (oldState.channel && tempChannels.has(oldState.channel.id) && oldState.channel.members.size === 0) {
@@ -373,9 +247,9 @@ client.on('voiceStateUpdate', async (oldState, newState) => {
             tempChannels.delete(oldState.channel.id);
             client.addLog(`🗑️ Salon vocal temporaire supprimé: ${oldState.channel.name}`);
         } catch (error) {
-            if (error.code !== 10003) { 
+            if (error.code !== 10003) {
                 client.addLog(`❌ Erreur suppression salon vocal ${oldState.channel.name}: ${error.message}`);
-                console.error("Erreur suppression salon:", error); 
+                console.error("Erreur suppression salon:", error);
             }
             tempChannels.delete(oldState.channel.id);
         }
@@ -389,9 +263,9 @@ client.on('voiceStateUpdate', async (oldState, newState) => {
                 await member.voice.setMute(false, "Unmute forcé pour salon temporaire.");
             }
             client.addLog(`🎤 ${member.user.tag} a rejoint le salon de ${ownerId}, unmute forcé.`);
-        } catch (err) { 
+        } catch (err) {
             client.addLog(`❌ Erreur unmute forcé pour ${member.user.tag}: ${err.message}`);
-            console.error("Erreur lors du forçage du unmute :", err); 
+            console.error("Erreur lors du forçage du unmute :", err);
         }
     }
 });
@@ -406,13 +280,11 @@ client.on('interactionCreate', async interaction => {
         const elapsed = Math.floor((Date.now() - client.maintenance.startedAt) / 1000);
         const minutes = Math.floor(elapsed / 60);
         const seconds = elapsed % 60;
-        // AJOUT LOG: Interaction bloquée pour maintenance
         client.addLog(`🛠️ Interaction de ${interaction.user.tag} bloquée (maintenance).`);
         return interaction.reply({ content: `🛠️ Le bot est en maintenance depuis **${minutes}min ${seconds}s**.\nMerci de réessayer plus tard ou contacte <@${OWNER_ID}>.`, ephemeral: true });
     }
     try {
         if (interaction.isModalSubmit()) {
-            // AJOUT LOG: Soumission de modale
             client.addLog(`📝 Modale soumise par ${interaction.user.tag} (ID: ${interaction.customId})`);
             const kintCommand = client.commands.get("kint");
             if (kintCommand?.handleModal) await kintCommand.handleModal(interaction);
@@ -421,28 +293,24 @@ client.on('interactionCreate', async interaction => {
         if (interaction.isCommand()) {
             const command = client.commands.get(interaction.commandName);
             if (!command) return;
-            // La log est déjà ici, elle est bien placée.
             const options = interaction.options?.data?.map(opt => `${opt.name}: ${opt.value}`).join(', ');
             client.addLog(`👀 Slash utilisé : /${interaction.commandName} par ${interaction.user.tag} (${interaction.user.id})${options ? ` | Options: ${options}` : ''}`);
             await command.execute(interaction);
             return;
         }
         if ((interaction.isStringSelectMenu() && interaction.customId.startsWith('shop_')) || (interaction.isButton() && interaction.customId.startsWith('shop_'))) {
-            // AJOUT LOG: Interaction avec le shop
             client.addLog(`🛍️ Interaction Shop par ${interaction.user.tag} (ID: ${interaction.customId})`);
             await handleMenuInteraction(interaction);
             return;
         }
         if (interaction.isStringSelectMenu() && interaction.customId === 'equip_title_select') {
-             // AJOUT LOG: Équipement de titre
-            client.addLog(`👑 ${interaction.user.tag} équipe un nouveau titre.`);
+           client.addLog(`👑 ${interaction.user.tag} équipe un nouveau titre.`);
             const titreCommand = require('./commands/titre.js');
             await titreCommand.handleSelect(interaction);
             return;
         }
         if (interaction.isButton()) {
             const { customId, channel, member, guild, user } = interaction;
-            // AJOUT LOG: Clic sur un bouton
             client.addLog(`🔘 Bouton cliqué par ${user.tag} (ID: ${customId})`);
 
             if (customId === 'ticket_accept') {
@@ -453,7 +321,6 @@ client.on('interactionCreate', async interaction => {
                     try {
                         const targetUser = await interaction.client.users.fetch(targetUserId);
                         await targetUser.send(`✅ ${interaction.user.username} a accepté ton ticket sur le serveur **KTS**. Un membre du support va bientôt te répondre.`);
-                        // AJOUT LOG
                         client.addLog(`🎫 Ticket de ${targetUser.tag} accepté par ${interaction.user.tag}`);
                     } catch (err) {
                         console.warn(`❌ Impossible d'envoyer un DM à l'utilisateur avec l'ID ${targetUserId}.`);
@@ -472,7 +339,6 @@ client.on('interactionCreate', async interaction => {
                     try {
                         const targetUser = await interaction.client.users.fetch(targetUserId);
                         await targetUser.send(`❌ ${interaction.user.username} a refusé ton ticket sur le serveur **KTS**. Tu peux en ouvrir un nouveau si besoin.`);
-                        // AJOUT LOG
                         client.addLog(`🎫 Ticket de ${targetUser.tag} refusé par ${interaction.user.tag}`);
                     } catch (err) {
                         console.warn(`❌ Impossible d'envoyer un DM à l'utilisateur avec l'ID ${targetUserId}.`);
@@ -491,7 +357,6 @@ client.on('interactionCreate', async interaction => {
                 if (!member.permissions.has(PermissionFlagsBits.ManageChannels)) {
                     return interaction.reply({ content: "🚫 Tu n'as pas la permission de fermer ce ticket.", ephemeral: true });
                 }
-                // AJOUT LOG
                 client.addLog(`🎫 Ticket ${channel.name} fermé par ${user.tag}.`);
                 const messages = ticketMessages.get(channel.id) || [];
                 const reason = ticketReasons.get(channel.id) || 'Non spécifiée';
@@ -509,7 +374,6 @@ client.on('interactionCreate', async interaction => {
                         } else {
                             await logsChannel.send({ content: `Logs du ticket ${channel.name} fermé par <@${user.id}> :\n\n${logContent}` });
                         }
-                        // AJOUT LOG
                         client.addLog(`📜 Logs du ticket ${channel.name} envoyés.`);
                     } catch (err) {
                         console.error('Erreur lors de l’envoi des logs:', err);
@@ -531,7 +395,6 @@ client.on('interactionCreate', async interaction => {
         }
     } catch (error) {
         console.error("Erreur de l'interaction :", error);
-        // AJOUT LOG: Erreur globale d'interaction
         client.addLog(`💥 Erreur grave sur une interaction de ${interaction.user.tag}: ${error.message}`);
         if (!interaction.replied && !interaction.deferred) {
             await interaction.reply({ content: '❌ Une erreur est survenue.', ephemeral: true });
@@ -539,33 +402,26 @@ client.on('interactionCreate', async interaction => {
     }
 });
 
-cron.schedule('0 9 * * *', () => { 
+cron.schedule('0 9 * * *', () => {
     client.addLog("⏰ CRON: Exécution de checkBirthdays.");
-    checkBirthdays(client); 
+    checkBirthdays(client);
 });
 checkBirthdays(client); // Exécution au démarrage
 cron.schedule('0 0 * * *', () => {
     const daysUntilReset = getTimeUntilNextReset().days;
-    // AJOUT LOG
     client.addLog(`⏰ CRON: Vérification quotidienne du reset KIP (${daysUntilReset} jours restants).`);
     if (daysUntilReset === 7) {
         client.addLog("🚨 ALERTE : Le reset KIP arrive dans 7 jours !");
         console.log("🚨 ALERTE : Le reset KIP arrive dans 7 jours !");
     }
 });
-setInterval(() => { 
-    // AJOUT LOG (peut être trop fréquent, donc désactivé par défaut)
-    // client.addLog("⏰ TASK: Exécution de checkKintWarns.");
-    checkKintWarns(client); 
-}, 60 * 1000);
-setInterval(() => { 
-    // AJOUT LOG (peut être trop fréquent, donc désactivé par défaut)
-    // client.addLog("⏰ TASK: Exécution de checkPolls.");
-    checkPolls(client); 
+setInterval(() => {
+    checkKintWarns(client);
 }, 60 * 1000);
 setInterval(() => {
-    // AJOUT LOG (peut être trop fréquent, donc désactivé par défaut)
-    // client.addLog("⏰ TASK: Exécution de la vérification des succès.");
+    checkPolls(client);
+}, 60 * 1000);
+setInterval(() => {
     const currencyData = JSON.parse(fs.readFileSync('./currency.json', 'utf8'));
     const pointsData = JSON.parse(fs.readFileSync('./points.json', 'utf8'));
     Object.keys(currencyData).forEach(userId => checkAchievements(userId, client));
@@ -575,21 +431,19 @@ setInterval(() => {
 const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
 rl.on('line', async (input) => {
     const trimmedInput = input.trim().toLowerCase();
-    // AJOUT LOG: Commande console reçue
     client.addLog(`⌨️ Commande console reçue: '${trimmedInput}'`);
     if (trimmedInput === 'reset') { await assignBadgesBeforeReset(client); await resetKIP(client); }
     else if (trimmedInput === 'patchnote') { await sendPatchNoteFromJSON(); }
-    else if (trimmedInput === 'exit') { 
+    else if (trimmedInput === 'exit') {
         client.addLog('🛑 Commande "exit" reçue. Arrêt du bot.');
-        console.log('Fermeture du bot...'); 
-        client.destroy(); 
-        process.exit(0); 
+        console.log('Fermeture du bot...');
+        client.destroy();
+        process.exit(0);
     }
 });
 
 const patchNoteChannelId = "1387426127634497616";
 async function sendPatchNoteFromJSON() {
-    // AJOUT LOG
     client.addLog("📝 Tentative d'envoi du patchnote depuis patchnote.json.");
     try {
         const data = fs.readFileSync('./patchnote.json', 'utf-8');
@@ -602,33 +456,30 @@ async function sendPatchNoteFromJSON() {
         if (patch.systeme?.length) embed.addFields({ name: '♻️ Système', value: patch.systeme.map(e => `• ${e}`).join('\n') });
         if (patch.footer) embed.setFooter({ text: patch.footer });
         const channel = client.channels.cache.get(patchNoteChannelId);
-        if (channel) { 
-            await channel.send({ embeds: [embed] }); 
+        if (channel) {
+            await channel.send({ embeds: [embed] });
             console.log("✅ Patchnote envoyé !");
             client.addLog("✅ Patchnote envoyé avec succès.");
         }
-        else { 
-            console.error("❌ Canal pour patchnote introuvable."); 
+        else {
+            console.error("❌ Canal pour patchnote introuvable.");
             client.addLog("❌ Échec de l'envoi du patchnote : canal introuvable.");
         }
-    } catch (err) { 
-        console.error("❌ Erreur envoi patchnote:", err); 
+    } catch (err) {
+        console.error("❌ Erreur envoi patchnote:", err);
         client.addLog(`❌ Erreur lors de l'envoi du patchnote : ${err.message}`);
     }
 }
-fs.watchFile('./patchnote.json', () => { 
-    // AJOUT LOG
+fs.watchFile('./patchnote.json', () => {
     client.addLog("📄 Fichier patchnote.json modifié, déclenchement de l'envoi.");
-    sendPatchNoteFromJSON(); 
+    sendPatchNoteFromJSON();
 });
 
-process.on('unhandledRejection', (reason, promise) => { 
+process.on('unhandledRejection', (reason, promise) => {
     console.error('🚨 PROMISE rejetée:', promise, 'Raison:', reason);
-    // AJOUT LOG
     client.addLog(`🚨 PROMISE REJETÉE: ${reason}`);
 });
-process.on('uncaughtException', (err) => { 
+process.on('uncaughtException', (err) => {
     console.error('❌ Exception non capturée:', err);
-    // AJOUT LOG
     client.addLog(`💥 EXCEPTION NON CAPTURÉE: ${err.message}`);
 });

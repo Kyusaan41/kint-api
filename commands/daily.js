@@ -1,12 +1,11 @@
 const { SlashCommandBuilder } = require('discord.js');
 const fs = require('fs');
 const path = require('path');
-const { addLog } = require('../index'); 
 
-const CURRENCY_FILE = path.join(__dirname, '../currency.json');
+// Assurez-vous que le chemin est correct
+const CURRENCY_FILE = path.join(__dirname, '../currency.json'); 
 const BONUS_ROLE_ID = '972561280344948747'; 
 const BONUS_AMOUNT = 500; 
-const LOG_CHANNEL_ID_1 = "1346143580049379379"; 
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -14,7 +13,8 @@ module.exports = {
     .setDescription('🪙 Réclame ta récompense quotidienne'),
   
   async execute(interaction) {
-    addLog(`🪙 Commande ${interaction.commandName} utilisée par ${interaction.user.tag}`);
+    // Utilisez interaction.client.addLog si c'est la méthode de votre bot
+    console.log(`🪙 Commande ${interaction.commandName} utilisée par ${interaction.user.tag}`);
 
     let currencyData;
     try {
@@ -24,23 +24,26 @@ module.exports = {
         currencyData = {};
       }
     } catch (err) {
-      console.error("Erreur lors de la lecture de currency.json :", err);
-      return interaction.reply({ content: "Erreur lors de la lecture des données.", ephemeral: true });
+      console.error("Erreur lecture currency.json:", err);
+      return interaction.reply({ content: "Erreur interne (lecture).", ephemeral: true });
     }
 
     const userId = interaction.user.id;
     const now = new Date();
 
     if (!currencyData[userId]) {
-      currencyData[userId] = { balance: 0, lastClaim: null };
+      // On initialise l'objet avec tous les champs nécessaires
+      currencyData[userId] = { balance: 0, lastDaily: null, lastBonus: null };
     }
 
-    const lastClaim = currencyData[userId].lastClaim ? new Date(currencyData[userId].lastClaim) : null;
+    // ▼▼▼ MODIFICATION ICI ▼▼▼
+    // On vérifie le minuteur "lastDaily"
+    const lastClaim = currencyData[userId].lastDaily ? new Date(currencyData[userId].lastDaily) : null;
     const lastClaimDate = lastClaim ? `${lastClaim.getFullYear()}-${lastClaim.getMonth() + 1}-${lastClaim.getDate()}` : null;
     const nowDate = `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`;
 
     if (lastClaimDate && lastClaimDate === nowDate) {
-      return interaction.reply({ content: "❌ Tu as déjà réclamé ta récompense quotidienne. Réessaie plus tard. ❌", ephemeral: true });
+      return interaction.reply({ content: "❌ Tu as déjà réclamé ta récompense quotidienne. Réessaie demain ! ❌", ephemeral: true });
     }
 
     const baseReward = 1000;
@@ -52,28 +55,29 @@ module.exports = {
       message = `<@${userId}> Récompense quotidienne réclamée ! Tu reçois ${reward} pièces ! (Bonus Nitro 💜🚀) ✅`;
     } else {
       message = `<@${userId}> Récompense quotidienne réclamée ! Tu reçois ${reward} pièces ! ✅`;
-        interaction.client.addLog(`💰 ${interaction.user.tag} a réclamé ${reward} pièces (daily).`);
     }
 
     currencyData[userId].balance += reward;
-    currencyData[userId].lastClaim = now.toISOString();
+    // ▼▼▼ MODIFICATION ICI ▼▼▼
+    // On met à jour le minuteur "lastDaily"
+    currencyData[userId].lastDaily = now.toISOString();
       
-
     try {
       fs.writeFileSync(CURRENCY_FILE, JSON.stringify(currencyData, null, 2));
     } catch (err) {
-      console.error("Erreur lors de l'écriture dans currency.json :", err);
-      return interaction.reply({ content: "Erreur lors de la mise à jour des données.", ephemeral: true });
+      console.error("Erreur écriture currency.json:", err);
+      return interaction.reply({ content: "Erreur interne (écriture).", ephemeral: true });
     }
-
-    try {
-      const logChannel = await interaction.client.channels.fetch(LOG_CHANNEL_ID_1);
-      if (logChannel) {
-        await logChannel.send(`📜 **Daily Log** : <@${userId}> a réclamé sa récompense quotidienne de ${reward} pièces le <t:${Math.floor(Date.now() / 1000)}:F>`);
-      }
-    } catch (err) {
-      console.error("Erreur lors de l'envoi du log dans le canal spécifique :", err);
-    }
+    
+    // Log pour un canal Discord
+     try {
+      const logChannel = await interaction.client.channels.fetch("1346143580049379379");
+       if (logChannel) {
+       await logChannel.send(`📜 Daily Log: <@${userId}> a réclamé ${reward} pièces.`);
+       }
+     } catch (err) {
+       console.error("Erreur envoi du log.", err);
+     }
 
     return interaction.reply({ content: message });
   }
